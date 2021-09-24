@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>彩票生成器</title>
+    <script src="jquery/jquery-2.1.1.min.js"></script>
+</head>
+<body>
+    <center>
+        输入想要生成的彩票注数: <input type="number" max="10" min="1" name="num" id="num"/>
+        <button type="button" id="confirmBtn">确认</button>
+        <div>
+            <table id="table" border="1 black solid">
+                <tr>
+                    <td>1 2 3 4 5 6 7</td>
+                </tr>
+            </table>
+        </div>
+    </center>
+
+    <script type="text/javascript">
+        $("#confirmBtn").click(function () {
+            var num = $("#num").val();
+            $.ajax({
+                "url" : "make/" + num,
+                "type" : "get",
+                "success" : function(response) {
+                    let result = response.result;
+                    if (result === "SUCCESS") {
+                        alert("SUCCESS");
+                        console.log(response.data);
+                    }
+
+                    if (result === "FAILED") {
+                        alert("FAILED! " + response.message);
+                    }
+
+                    let data = response.data;
+                    $("#table").empty();
+                    for(let i = 0; i < data.length; i++) {
+                        let ticket = data[i];
+                        let td = "<tr><td>" + ticket[0] + " " + ticket[1] + " " + ticket[2] + " " + ticket[3] + " " + ticket[4] + " " + ticket[5] + " " + ticket[6] + "</td></tr>";
+                        $("#table").append(td);
+                    }
+                },
+                "error" : function(response) {
+                    alert(response.status + " " + response.statusText);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
